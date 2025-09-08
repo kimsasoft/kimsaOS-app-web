@@ -73,18 +73,45 @@ jspm_packages/
 .env.production.local
 .env.*.local
 
+# Sensitive files
+.env.example
+secrets.json
+*.pem
+*.key
+*.crt
+*.p12
+
+# Database credentials and backups
+database.url
+*.sql.gz
+*.dump
+dump.rdb
+
+# API keys and tokens
+.secrets/
+api-keys.json
+tokens.json
+credentials.json
+
 # Vercel
 .vercel
 
 # Turbo
 .turbo
 
-# Debug logs
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
+
+# Runtime errors
+crash.log
+error.log
+*.crash
 
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -99,12 +126,18 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/
 *.lcov
 
-# Logs
-logs
-*.log
+# Testing
+.jest/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Vitest
+**/coverage/
+**/.vitest-cache/
 
 # Editor directories and files
 .vscode/
@@ -135,9 +168,25 @@ temp/
 supabase/.branches
 supabase/.temp
 supabase/logs
+.supabase/
 
 # Prisma
 prisma/migrations/
+prisma/dev.db*
+*.db-journal
+
+# Next.js specific
+.next/
+out/
+next-env.d.ts
+
+# Turborepo
+.turbo/
+
+# Package managers - keep yarn.lock, ignore others
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
 
 # Testing
 .jest/
@@ -184,6 +233,23 @@ firebase.json
 
 # Local development
 .local
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+*.code-workspace
+
+# IDE specific files
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# Development notes and docs
+TODO.md
+NOTES.md
+dev-notes/
+.scratch/
 
 # Backup files
 *.bak

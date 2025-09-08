@@ -13,10 +13,26 @@
     "db:push": "dotenv -e .env -- yarn workspace @repo/database db:push",
     "db:migrate": "dotenv -e .env -- yarn workspace @repo/database db:migrate",
     "db:studio": "dotenv -e .env -- yarn workspace @repo/database db:studio",
-    "db:seed": "dotenv -e .env -- yarn workspace @repo/database db:seed"
+    "db:seed": "dotenv -e .env -- yarn workspace @repo/database db:seed",
+    "test": "yarn workspace @repo/ui test",
+    "test:run": "yarn workspace @repo/ui test --run",
+    "test:watch": "yarn workspace @repo/ui test --watch",
+    "test:coverage": "yarn workspace @repo/ui test:coverage",
+    "test:ui": "yarn workspace @repo/ui test --ui",
+    "test:all": "yarn workspace @repo/ui test --run",
+    "test:silent": "yarn workspace @repo/ui test --run --reporter=basic",
+    "test:verbose": "yarn workspace @repo/ui test --run --reporter=verbose"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^5.0.2",
     "concurrently": "^8.2.2",
-    "dotenv-cli": "^10.0.0"
+    "dotenv-cli": "^10.0.0",
+    "jsdom": "^26.1.0",
+    "vite": "^7.1.5",
+    "vitest": "^3.2.4"
   }
 }
