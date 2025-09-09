@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 import { supabaseServer } from "@repo/supabase";
-import { checkDatabaseConfig, handleApiError, checkAuth } from "@/lib/api-utils";
+import {
+  checkDatabaseConfig,
+  handleApiError,
+  checkAuth,
+} from "@/lib/api-utils";
 
 export async function GET() {
   try {
@@ -84,13 +88,6 @@ export async function POST() {
 
     return NextResponse.json({ profile });
   } catch (error: any) {
-    console.error("❌ Error en /api/user/profile POST:", error);
-    return NextResponse.json(
-      { 
-        error: "Internal server error",
-        details: process.env.NODE_ENV === "development" ? error.message : undefined
-      }, 
-      { status: 500 }
-    );
+    return handleApiError(error, "/api/user/profile POST");
   }
 }

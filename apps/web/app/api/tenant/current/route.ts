@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { cookies, headers } from "next/headers";
 import { prisma } from "@repo/database";
-import { checkDatabaseConfig, handleApiError, checkAuth } from "@/lib/api-utils";
+import {
+  checkDatabaseConfig,
+  handleApiError,
+  checkAuth,
+} from "@/lib/api-utils";
 
 export async function GET() {
   try {
@@ -17,7 +21,10 @@ export async function GET() {
     const slug = c.get("tenant_slug")?.value;
     const domain = c.get("tenant_domain")?.value;
     if (!slug && !domain) {
-      return NextResponse.json({ error: "No tenant specified" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No tenant specified" },
+        { status: 400 }
+      );
     }
 
     const tenant = await prisma.tenant.findFirst({
