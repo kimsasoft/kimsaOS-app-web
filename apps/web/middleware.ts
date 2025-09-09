@@ -116,7 +116,10 @@ export async function middleware(req: NextRequest) {
     const host = req.headers.get("host") || "";
     const res = NextResponse.next();
     const isLocalhost =
-      host.includes("localhost") || host.includes("127.0.0.1");
+      process.env.NODE_ENV === "development" ||
+      process.env.FORCE_LOCALHOST === "true" ||
+      host.includes("localhost") ||
+      host.includes("127.0.0.1");
 
     // Crear cliente de Supabase para validar autenticación
     const supabase = createServerClient(
