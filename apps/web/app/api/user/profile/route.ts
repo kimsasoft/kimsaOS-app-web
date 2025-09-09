@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 import { supabaseServer } from "@repo/supabase";
+import { checkDatabaseConfig, handleApiError, checkAuth } from "@/lib/api-utils";
 
 export async function GET() {
-  // Obtener user ID del header establecido por el middleware
-  const h = headers();
-  const userId = h.get("x-user-id");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
+    // Verificar configuración
+    const dbCheck = checkDatabaseConfig();
+    if (dbCheck) return dbCheck;
+
+    // Verificar autenticación
+    const { error: authError, userId } = checkAuth(headers());
+    if (authError) return authError;
+
     const profile = await prisma.profile.findUnique({
-      where: { id: userId },
+      where: { id: userId! },
       select: {
         id: true,
         email: true,
@@ -27,20 +28,20 @@ export async function GET() {
 
     return NextResponse.json({ profile });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return handleApiError(error, "/api/user/profile GET");
   }
 }
 
 export async function POST() {
-  // Obtener user ID del header establecido por el middleware
-  const h = headers();
-  const userId = h.get("x-user-id");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
+    // Verificar configuración
+    const dbCheck = checkDatabaseConfig();
+    if (dbCheck) return dbCheck;
+
+    // Verificar autenticación
+    const { error: authError, userId } = checkAuth(headers());
+    if (authError) return authError;
+
     // Obtener datos del usuario de Supabase Auth
     const supabase = supabaseServer();
     const {
@@ -57,7 +58,7 @@ export async function POST() {
 
     // Crear o actualizar el perfil del usuario
     const profile = await prisma.profile.upsert({
-      where: { id: userId },
+      where: { id: userId! },
       update: {
         email: user.email!,
         full_name:
@@ -65,7 +66,7 @@ export async function POST() {
         avatar_url: user.user_metadata?.avatar_url || null,
       },
       create: {
-        id: userId,
+        id: userId!,
         email: user.email!,
         full_name:
           user.user_metadata?.full_name || user.user_metadata?.name || null,
@@ -83,6 +84,13 @@ export async function POST() {
 
     return NextResponse.json({ profile });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("❌ Error en /api/user/profile POST:", error);
+    return NextResponse.json(
+      { 
+        error: "Internal server error",
+        details: process.env.NODE_ENV === "development" ? error.message : undefined
+      }, 
+      { status: 500 }
+    );
   }
 }
