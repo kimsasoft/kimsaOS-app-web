@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start -p 3001"
+    "build": "prisma generate && next build",
+    "start": "next start -p 3001",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.0.2",
@@ -31,6 +32,7 @@
     "@types/react": "^18.2.66",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
+    "prisma": "^5.19.1",
     "tailwindcss": "^3.4.9",
     "typescript": "^5.4.5"
   },

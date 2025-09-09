@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently -k -n web,admin -c blue,magenta \"yarn workspace web dev\" \"yarn workspace admin dev\"",
-    "build": "yarn workspace web build && yarn workspace admin build",
+    "build": "yarn db:generate && yarn workspace web build && yarn workspace admin build",
     "start": "concurrently -k -n web,admin -c blue,magenta \"yarn workspace web start\" \"yarn workspace admin start\"",
     "db:generate": "dotenv -e .env -- yarn workspace @repo/database db:generate",
     "db:push": "dotenv -e .env -- yarn workspace @repo/database db:push",

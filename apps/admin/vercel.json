@@ -1,0 +1,4 @@
+{
+    "installCommand": "cd ../.. && yarn install --frozen-lockfile",
+    "buildCommand": "cd ../.. && yarn workspace @repo/database run db:generate && yarn workspace admin build"
+}
