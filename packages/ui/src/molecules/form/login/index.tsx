@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "../../../button";
 import { Input } from "../../../input";
 import { Label } from "../../../label";
+import { Alert } from "../../../alert";
 
 export interface LoginFormProps {
   onPasswordLogin?: (email: string, password: string) => Promise<void>;
@@ -27,12 +28,23 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPwd] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Debug logging
+  console.log('LoginForm error state:', error);
 
   const handlePasswordLogin = async () => {
     if (!email || !password || !onPasswordLogin) return;
+    
     setIsLoading(true);
+    setError(null); // Limpiar errores anteriores
+    
     try {
       await onPasswordLogin(email, password);
+    } catch (err) {
+      // Siempre mostrar un mensaje de prueba para debugging
+      console.log('Error capturado:', err);
+      setError('Credenciales incorrectas. Por favor verifica tu correo y contraseña.');
     } finally {
       setIsLoading(false);
     }
@@ -40,9 +52,18 @@ export function LoginForm({
 
   const handleMagicLink = async () => {
     if (!email || !onMagicLinkLogin) return;
+    
     setIsLoading(true);
+    setError(null); // Limpiar errores anteriores
+    
     try {
       await onMagicLinkLogin(email);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError('Error al enviar el enlace mágico. Por favor intenta de nuevo.');
+      } else {
+        setError('Ocurrió un error inesperado. Por favor intenta de nuevo.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -50,9 +71,18 @@ export function LoginForm({
 
   const handleOAuth = async (provider: string) => {
     if (!onOAuthLogin) return;
+    
     setIsLoading(true);
+    setError(null); // Limpiar errores anteriores
+    
     try {
       await onOAuthLogin(provider);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(`Error al iniciar sesión con ${provider}. Por favor intenta de nuevo.`);
+      } else {
+        setError('Ocurrió un error inesperado. Por favor intenta de nuevo.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +95,15 @@ export function LoginForm({
           <h1 className="text-2xl font-semibold text-foreground mb-2">Iniciar sesión</h1>
           <p className="text-sm text-muted-foreground">Ingresa a tu cuenta</p>
         </div>
+        
+        {/* Mostrar errores de forma bonita - Actualizado */}
+        {error && (
+          <div className="mb-6">
+            <Alert variant="error" onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          </div>
+        )}
         
         <div className="space-y-4">
           <div className="space-y-2">

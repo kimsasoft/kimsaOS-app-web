@@ -9,7 +9,11 @@
         "db:migrate": "prisma migrate dev",
         "db:studio": "prisma studio",
         "db:seed": "tsx src/seed.ts",
-        "db:rls": "tsx src/apply-rls.ts"
+        "db:rls": "tsx src/apply-rls.ts",
+        "db:clean": "tsx src/clean-test-data.ts",
+        "db:clean:all": "tsx src/clean-test-data.ts --all",
+        "db:clean:force": "tsx src/force-clean.ts",
+        "db:status": "tsx src/show-db-status.ts"
     },
     "dependencies": {
         "@prisma/client": "^5.19.1"
