@@ -190,4 +190,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 }
-export const config = { matcher: ["/((?!_next|.*\\..*).*)"] };
+export const config = {
+  matcher: ["/((?!_next|.*\\.|auth/callback).*)"],
+};
