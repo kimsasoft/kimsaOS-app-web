@@ -11,6 +11,6 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.redirect(
-    new URL("/dashboard", process.env.NEXT_PUBLIC_APP_URL)
+    new URL("/login", process.env.NEXT_PUBLIC_APP_URL)
   );
 }
