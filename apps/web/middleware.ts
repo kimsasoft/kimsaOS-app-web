@@ -35,12 +35,8 @@ async function handleLocalhost(
       error: userError,
     } = await supabase.auth.getUser();
 
-    if (userError) {
+    if (userError || !user) {
       console.error("❌ Error obteniendo usuario:", userError.message);
-      return;
-    }
-
-    if (!user) {
       return;
     }
 

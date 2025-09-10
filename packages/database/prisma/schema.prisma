@@ -18,7 +18,6 @@ model Profile {
     full_name      String?
     avatar_url     String?
     is_super_admin Boolean  @default(false)
-    is_onboarding  Boolean  @default(false)
     created_at     DateTime @default(now())
     updated_at     DateTime @updatedAt
 
