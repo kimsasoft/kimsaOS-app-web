@@ -1,47 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import { supabaseServer } from "@repo/supabase";
 
-export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
-
+export async function GET(request: Request) {
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
   if (code) {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll(cookiesToSet) {
-            // We can't set cookies here, they'll be set in the redirect response
-          },
-        },
-      }
-    );
-
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const isLocalhost = request.headers.get("host")?.includes("localhost");
-
-      if (isLocalhost) {
-        return NextResponse.redirect(`${origin}${next}`);
-      }
-
-      // For production, construct the URL properly
-      const protocol = forwardedHost ? "https" : "http";
-      const host = forwardedHost || request.headers.get("host");
-      return NextResponse.redirect(`${protocol}://${host}${next}`);
-    }
+    const supabase = supabaseServer();
+    // Intercambia el código por la sesión y la guarda en las cookies
+    await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // Return to login if something went wrong
-  return NextResponse.redirect(`${origin}/login`);
+  return NextResponse.redirect(
+    new URL("/dashboard", process.env.NEXT_PUBLIC_APP_URL)
+  );
 }
-
-// Mark this route as dynamic
-export const runtime = "edge";
