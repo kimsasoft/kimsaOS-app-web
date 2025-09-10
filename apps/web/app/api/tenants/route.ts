@@ -5,7 +5,7 @@ import { prisma } from "@repo/database";
 import { supabaseServer } from "@repo/supabase";
 
 // Forzar que esta ruta sea dinámica
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const schema = z.object({
   name: z.string().min(2),

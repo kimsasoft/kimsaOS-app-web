@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 
 // Forzar que esta ruta sea dinámica
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   // Obtener user ID del header establecido por el middleware

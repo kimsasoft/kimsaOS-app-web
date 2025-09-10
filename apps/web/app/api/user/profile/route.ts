@@ -9,7 +9,7 @@ import {
 } from "@/lib/api-utils";
 
 // Forzar que esta ruta sea dinámica
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
