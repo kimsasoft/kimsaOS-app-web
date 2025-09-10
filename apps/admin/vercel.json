@@ -1,6 +1,6 @@
 {
     "installCommand": "cd ../.. && yarn install --frozen-lockfile",
-    "buildCommand": "cd ../.. && yarn workspace @repo/database run db:migrate:deploy && yarn workspace @repo/database run db:generate && yarn workspace admin build",
+    "buildCommand": "cd ../.. && yarn workspace @repo/database run db:push && yarn workspace @repo/database run db:generate && yarn workspace admin build",
     "outputDirectory": ".next",
     "framework": "nextjs"
 }
