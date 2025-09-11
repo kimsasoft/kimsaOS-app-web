@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 
 // Forzar que esta ruta sea dinámica
@@ -14,48 +14,50 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const c = cookies();
-  const slug = c.get("tenant_slug")?.value;
-  const domain = c.get("tenant_domain")?.value;
-
-  if (!slug && !domain) {
-    return NextResponse.json({ error: "No tenant specified" }, { status: 400 });
-  }
-
   try {
-    // Primero encontrar el tenant
-    const tenant = await prisma.tenant.findFirst({
-      where: domain ? { domain } : { slug },
-    });
-
-    if (!tenant) {
-      return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
-    }
-
-    // Verificar que el usuario tenga acceso a este tenant
+    console.log('🔍 Cargando facturas para usuario:', userId);
+    
+    // Buscar la membresía del usuario para obtener el tenant
     const membership = await prisma.membership.findFirst({
-      where: {
-        user_id: userId,
-        tenant_id: tenant.id,
+      where: { 
+        user_id: userId 
       },
+      include: {
+        tenant: true
+      }
     });
 
-    if (!membership) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
+    if (!membership || !membership.tenant) {
+      console.log('❌ No se encontró membresía para usuario:', userId);
+      return NextResponse.json({ 
+        error: "No tenant membership found" 
+      }, { status: 404 });
     }
 
-    // Obtener las facturas
+    console.log('✅ Tenant encontrado para facturas:', membership.tenant.id);
+
+    // Obtener las facturas del tenant
     const invoices = await prisma.invoice.findMany({
       where: {
-        tenant_id: tenant.id,
+        tenant_id: membership.tenant.id,
       },
       orderBy: {
         created_at: "desc",
       },
+      select: {
+        id: true,
+        number: true,
+        amount: true,
+        status: true,
+        created_at: true,
+      },
     });
+
+    console.log('✅ Facturas cargadas:', invoices.length);
 
     return NextResponse.json({ invoices });
   } catch (error: any) {
+    console.error('❌ Error cargando facturas:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
