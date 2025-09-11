@@ -1047,19 +1047,19 @@ __metadata:
 
 "@repo/database@file:../../packages/database::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=6e03ea&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=16f4ea&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@prisma/client": "npm:^5.19.1"
-  checksum: 10c0/2e4c57a433d71b9464ae02a5f8e3d7cc0dbcb79bba1641d0cf35553681a0c3ea9399873c927cddeec7646e58ace0681727ef5d2f26c0d836c6683f9e762b8c0b
+  checksum: 10c0/8ecef4aaae8d65166d78e4077b3a01dcce77312171e50ebf5841d98dc04a566073dedabd4115ef233e1ca41609530f64d3d459a359f3e7e88b98878b4fdb7d01
   languageName: node
   linkType: hard
 
 "@repo/database@file:../../packages/database::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=6e03ea&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=16f4ea&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@prisma/client": "npm:^5.19.1"
-  checksum: 10c0/2e4c57a433d71b9464ae02a5f8e3d7cc0dbcb79bba1641d0cf35553681a0c3ea9399873c927cddeec7646e58ace0681727ef5d2f26c0d836c6683f9e762b8c0b
+  checksum: 10c0/8ecef4aaae8d65166d78e4077b3a01dcce77312171e50ebf5841d98dc04a566073dedabd4115ef233e1ca41609530f64d3d459a359f3e7e88b98878b4fdb7d01
   languageName: node
   linkType: hard
 
@@ -1075,19 +1075,19 @@ __metadata:
 
 "@repo/supabase@file:../../packages/supabase::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=be5ce9&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=d76f62&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@supabase/ssr": "npm:^0.5.1"
-  checksum: 10c0/db51f565c8cc5bfad142d4aff23905bd57f231aeddadbb28115d03cfe1a3fcf92d31b32eda77729918d9edfe807153cd74a63643b30fb4af04c82367636a5352
+  checksum: 10c0/1bd87580eb13f891ed6eb5748b1e690e1db033474f85922eb02e3358150b6a7f92a46883b36ed94b555c7d5a75849b474c4edb86092afb4c6180d45e54483a80
   languageName: node
   linkType: hard
 
 "@repo/supabase@file:../../packages/supabase::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=be5ce9&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=d76f62&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@supabase/ssr": "npm:^0.5.1"
-  checksum: 10c0/db51f565c8cc5bfad142d4aff23905bd57f231aeddadbb28115d03cfe1a3fcf92d31b32eda77729918d9edfe807153cd74a63643b30fb4af04c82367636a5352
+  checksum: 10c0/1bd87580eb13f891ed6eb5748b1e690e1db033474f85922eb02e3358150b6a7f92a46883b36ed94b555c7d5a75849b474c4edb86092afb4c6180d45e54483a80
   languageName: node
   linkType: hard
 
@@ -1101,27 +1101,27 @@ __metadata:
 
 "@repo/ui@file:../../packages/ui::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=cdeea8&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=b0c100&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@radix-ui/react-label": "npm:^2.0.2"
     "@radix-ui/react-slot": "npm:^1.0.2"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     tailwind-merge: "npm:^2.5.2"
-  checksum: 10c0/1058e570c125409c6fce203bdd5d0bf700cf3b1a79497b80175346e94ab26638896271216379f8e8ce3ed109cfa575e9f239b07c896e967067ff21ad9c144995
+  checksum: 10c0/a41266029cd6873833a1b12af970e090015f164ef0826a4f4cd0a706daaffbad53753f7052cdb10e49e7173d760616d9c5afd1bfb2d82b68c57c17d548841682
   languageName: node
   linkType: hard
 
 "@repo/ui@file:../../packages/ui::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=cdeea8&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=b0c100&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@radix-ui/react-label": "npm:^2.0.2"
     "@radix-ui/react-slot": "npm:^1.0.2"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     tailwind-merge: "npm:^2.5.2"
-  checksum: 10c0/1058e570c125409c6fce203bdd5d0bf700cf3b1a79497b80175346e94ab26638896271216379f8e8ce3ed109cfa575e9f239b07c896e967067ff21ad9c144995
+  checksum: 10c0/a41266029cd6873833a1b12af970e090015f164ef0826a4f4cd0a706daaffbad53753f7052cdb10e49e7173d760616d9c5afd1bfb2d82b68c57c17d548841682
   languageName: node
   linkType: hard
 
@@ -2324,9 +2324,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.211":
-  version: 1.5.216
-  resolution: "electron-to-chromium@npm:1.5.216"
-  checksum: 10c0/e0da204143742cd598ad0030cb06c83f778c04fbb0af3fcffd78960043436cfcc99734d87da9a06cbaca6c08b09b4fc0d26d56a0ede762184034e788f5b7e5ac
+  version: 1.5.217
+  resolution: "electron-to-chromium@npm:1.5.217"
+  checksum: 10c0/e63eab55c0bd5d08e878f90c1adec384f701d51763ecb7c08a951adc49b97483d5cd93595d2166c7072ed1ba314a65d27efca99aa611669f9d9a89e351fd9529
   languageName: node
   linkType: hard
 
@@ -3021,15 +3021,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.543.0":
-  version: 0.543.0
-  resolution: "lucide-react@npm:0.543.0"
-  peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/76bb54f9c602ff5d44ec66f2786c035d92aaabca1e1abb380b0c8101dfb3290e52c82fa4d630e286ef07c05b63696e187f0ca3ae186535d9c5b4de7aa8825bd3
-  languageName: node
-  linkType: hard
-
 "lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
@@ -3257,18 +3248,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "next-supabase-monorepo@workspace:."
   dependencies:
-    "@testing-library/dom": "npm:^10.4.1"
-    "@testing-library/jest-dom": "npm:^6.8.0"
-    "@testing-library/react": "npm:^16.3.0"
-    "@testing-library/user-event": "npm:^14.6.1"
-    "@vitejs/plugin-react": "npm:^5.0.2"
     concurrently: "npm:^8.2.2"
     dotenv-cli: "npm:^10.0.0"
-    jsdom: "npm:^26.1.0"
-    lucide-react: "npm:^0.543.0"
-    vite: "npm:^7.1.5"
-    vitest: "npm:^3.2.4"
-    zustand: "npm:^5.0.8"
   languageName: unknown
   linkType: soft
 
@@ -4852,26 +4833,5 @@ __metadata:
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10c0/5718ec35e3c40b600316c5b4c5e4976f7fee68151bc8f8d90ec18a469be9571f072e1bbaace10f1e85cf8892ea12d90821b200e980ab46916a6166a4260a983c
-  languageName: node
-  linkType: hard
-
-"zustand@npm:^5.0.8":
-  version: 5.0.8
-  resolution: "zustand@npm:5.0.8"
-  peerDependencies:
-    "@types/react": ">=18.0.0"
-    immer: ">=9.0.6"
-    react: ">=18.0.0"
-    use-sync-external-store: ">=1.2.0"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    immer:
-      optional: true
-    react:
-      optional: true
-    use-sync-external-store:
-      optional: true
-  checksum: 10c0/e865a6f7f1c0e03571701db5904151aaa7acefd6f85541a117085e129bf16e8f60b11f8cc82f277472de5c7ad5dcb201e1b0a89035ea0b40c9d9aab3cd24c8ad
   languageName: node
   linkType: hard
