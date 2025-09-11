@@ -36,15 +36,20 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
+      console.log('🔄 Cargando datos del dashboard...');
+      
       // Primero asegurar que el perfil existe
       await fetch("/api/user/profile", { method: "POST" });
 
-      // Cargar información del tenant actual
-      const tenantResponse = await fetch("/api/tenant/current");
+      // Cargar información del tenant del usuario usando la nueva API
+      const tenantResponse = await fetch("/api/user/tenant");
       if (!tenantResponse.ok) {
-        throw new Error("No se pudo cargar la información del tenant");
+        const errorData = await tenantResponse.json();
+        console.error('❌ Error cargando tenant:', errorData);
+        throw new Error(errorData.error || "No se pudo cargar la información del tenant");
       }
       const tenantData = await tenantResponse.json();
+      console.log('✅ Datos del tenant cargados:', tenantData);
       setTenant(tenantData.tenant);
 
       // Cargar facturas
