@@ -9,19 +9,19 @@ vi.mock('next/link', () => ({
     <a href={href} data-testid="mock-link">{children}</a>
 }));
 
-const TestIcon = () => <div data-testid="test-icon">Icon</div>;
+const TestIcon = ({ className }: { className?: string }) => <div data-testid="test-icon" className={className}>Icon</div>;
 
 const mockItems = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: React.createElement(TestIcon),
+    icon: TestIcon,
     isActive: true,
   },
   {
     label: "Empresa",
     href: undefined,
-    icon: React.createElement(TestIcon),
+    icon: TestIcon,
     disabled: true,
   },
 ];

@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { DashboardIcon, CompanyIcon } from '../../../icons';
 
 interface SidebarItem {
   label: string;
   href?: string;
-  icon: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
   isActive?: boolean;
   disabled?: boolean;
 }
@@ -41,7 +42,7 @@ export function Sidebar({ items, className = "" }: SidebarProps) {
               `}
             >
               <span className="w-5 h-5">
-                {item.icon}
+                <item.icon className="w-5 h-5" />
               </span>
               <span>{item.label}</span>
             </div>

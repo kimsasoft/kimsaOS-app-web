@@ -8,7 +8,10 @@ export default function Login() {
       email,
       password,
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      // El error será capturado por el LoginForm y mostrado con el Alert bonito
+      throw new Error(error.message);
+    }
     location.href = "/dashboard";
   };
 
@@ -18,9 +21,10 @@ export default function Login() {
       options: { emailRedirectTo: `${location.origin}/auth/callback` },
     });
     if (error) {
-      alert(error.message);
+      throw new Error("No se pudo enviar el enlace mágico");
     } else {
-      alert("Revisa tu correo");
+      // TODO: Mostrar notificación de éxito cuando implementemos las notificaciones
+      alert("Revisa tu correo electrónico para el enlace de acceso");
     }
   };
 
@@ -29,7 +33,9 @@ export default function Login() {
       provider: provider as any,
       options: { redirectTo: `${location.origin}/auth/callback` },
     });
-    if (error) alert(error.message);
+    if (error) {
+      throw new Error(`Error al conectar con ${provider}`);
+    }
   };
 
   return (
