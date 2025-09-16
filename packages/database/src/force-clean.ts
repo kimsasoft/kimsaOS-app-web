@@ -8,8 +8,8 @@ async function forceCleanAll() {
   try {
     // Crear nueva instancia de prisma para evitar conflictos
     
-    console.log("1. Eliminando facturas...");
-    await prisma.invoice.deleteMany({});
+    console.log("1. Eliminando órdenes...");
+    await prisma.order.deleteMany({});
     
     console.log("2. Eliminando membresías...");
     await prisma.membership.deleteMany({});

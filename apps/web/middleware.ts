@@ -23,10 +23,9 @@ async function handleLocalhost(
 ) {
   try {
     const existingSlug = req.cookies.get("tenant_slug")?.value;
-    const existingDomain = req.cookies.get("tenant_domain")?.value;
 
     // Si ya hay cookies, no hacer nada
-    if (existingSlug || existingDomain) {
+    if (existingSlug) {
       return;
     }
 
@@ -48,8 +47,7 @@ async function handleLocalhost(
         tenant_id,
         tenants!tenant_id (
           id,
-          slug,
-          domain
+          slug
         )
       `
       )
@@ -67,15 +65,9 @@ async function handleLocalhost(
     if (memberships && memberships.length > 0) {
       const tenant = memberships[0].tenants as any;
 
-      if (tenant) {
+      if (tenant && tenant.slug) {
         // Establecer cookies automáticamente
-        if (tenant.domain) {
-          res.cookies.set("tenant_domain", tenant.domain, { path: "/" });
-          res.cookies.delete("tenant_slug");
-        } else if (tenant.slug) {
-          res.cookies.set("tenant_slug", tenant.slug, { path: "/" });
-          res.cookies.delete("tenant_domain");
-        }
+        res.cookies.set("tenant_slug", tenant.slug, { path: "/" });
       }
     }
   } catch (error) {
@@ -95,14 +87,12 @@ function handleProductionDomains(host: string, res: NextResponse) {
     const parts = host.split(".");
     if (parts.length >= 3) {
       res.cookies.set("tenant_slug", parts[0], { path: "/" });
-      res.cookies.delete("tenant_domain");
     } else {
       res.cookies.delete("tenant_slug");
-      res.cookies.delete("tenant_domain");
     }
   } else {
-    res.cookies.set("tenant_domain", host, { path: "/" });
-    res.cookies.delete("tenant_slug");
+    // Para dominios personalizados, usar el host como slug
+    res.cookies.set("tenant_slug", host.replace(/\./g, '-'), { path: "/" });
   }
 }
 

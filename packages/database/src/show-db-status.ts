@@ -33,7 +33,6 @@ async function showDatabaseStatus() {
         id: true,
         name: true,
         slug: true,
-        domain: true,
         created_at: true,
       }
     });
@@ -42,7 +41,6 @@ async function showDatabaseStatus() {
     tenants.forEach((tenant, index) => {
       console.log(`${index + 1}. ${tenant.name}`);
       console.log(`   Slug: ${tenant.slug}`);
-      console.log(`   Domain: ${tenant.domain || 'Sin dominio'}`);
       console.log(`   ID: ${tenant.id}`);
       console.log(`   Creado: ${tenant.created_at.toISOString()}`);
       console.log();
@@ -69,8 +67,8 @@ async function showDatabaseStatus() {
       console.log();
     });
 
-    // Mostrar facturas
-    const invoices = await prisma.invoice.findMany({
+    // Mostrar órdenes
+    const orders = await prisma.order.findMany({
       include: {
         tenant: {
           select: { name: true, slug: true }
@@ -78,15 +76,15 @@ async function showDatabaseStatus() {
       }
     });
     
-    console.log("\n📄 FACTURAS:");
-    if (invoices.length === 0) {
-      console.log("No hay facturas");
+    console.log("\n📄 ÓRDENES:");
+    if (orders.length === 0) {
+      console.log("No hay órdenes");
     } else {
-      invoices.forEach((invoice, index) => {
-        console.log(`${index + 1}. ${invoice.number} - $${invoice.amount}`);
-        console.log(`   Tenant: ${invoice.tenant.name}`);
-        console.log(`   Estado: ${invoice.status}`);
-        console.log(`   Creado: ${invoice.created_at.toISOString()}`);
+      orders.forEach((order, index) => {
+        console.log(`${index + 1}. ${order.number} - $${order.total}`);
+        console.log(`   Tenant: ${order.tenant.name}`);
+        console.log(`   Estado: ${order.status}`);
+        console.log(`   Creado: ${order.created_at.toISOString()}`);
         console.log();
       });
     }
@@ -95,7 +93,7 @@ async function showDatabaseStatus() {
     console.log(`- Perfiles: ${profiles.length}`);
     console.log(`- Empresas: ${tenants.length}`);
     console.log(`- Membresías: ${memberships.length}`);
-    console.log(`- Facturas: ${invoices.length}`);
+    console.log(`- Órdenes: ${orders.length}`);
 
   } catch (error) {
     console.error("❌ Error:", error);

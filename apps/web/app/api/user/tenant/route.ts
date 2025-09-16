@@ -25,7 +25,6 @@ export async function GET() {
             id: true,
             name: true,
             slug: true,
-            domain: true,
             created_at: true,
           }
         }

@@ -22,8 +22,7 @@ export async function GET() {
 
     const c = cookies();
     const slug = c.get("tenant_slug")?.value;
-    const domain = c.get("tenant_domain")?.value;
-    if (!slug && !domain) {
+    if (!slug) {
       return NextResponse.json(
         { error: "No tenant specified" },
         { status: 400 }
@@ -31,12 +30,11 @@ export async function GET() {
     }
 
     const tenant = await prisma.tenant.findFirst({
-      where: domain ? { domain } : { slug },
+      where: { slug },
       select: {
         id: true,
         name: true,
         slug: true,
-        domain: true,
       },
     });
 

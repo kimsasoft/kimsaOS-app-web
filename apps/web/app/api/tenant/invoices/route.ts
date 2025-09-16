@@ -36,8 +36,8 @@ export async function GET() {
 
     console.log('✅ Tenant encontrado para facturas:', membership.tenant.id);
 
-    // Obtener las facturas del tenant
-    const invoices = await prisma.invoice.findMany({
+    // Obtener las órdenes del tenant
+    const orders = await prisma.order.findMany({
       where: {
         tenant_id: membership.tenant.id,
       },
@@ -47,15 +47,15 @@ export async function GET() {
       select: {
         id: true,
         number: true,
-        amount: true,
+        total: true,
         status: true,
         created_at: true,
       },
     });
 
-    console.log('✅ Facturas cargadas:', invoices.length);
+    console.log('✅ Órdenes cargadas:', orders.length);
 
-    return NextResponse.json({ invoices });
+    return NextResponse.json({ orders });
   } catch (error: any) {
     console.error('❌ Error cargando facturas:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

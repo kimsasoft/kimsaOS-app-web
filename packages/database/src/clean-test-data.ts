@@ -7,10 +7,10 @@ async function cleanAllData() {
   console.log("⚠️  ADVERTENCIA: Esto eliminará TODOS los datos excepto el super admin!");
   
   try {
-    // 1. Eliminar todas las facturas
-    console.log("🗑️  Eliminando todas las facturas...");
-    const deletedInvoices = await prisma.invoice.deleteMany({});
-    console.log(`✅ Eliminadas ${deletedInvoices.count} facturas`);
+    // 1. Eliminar todas las órdenes
+    console.log("🗑️  Eliminando todas las órdenes...");
+    const deletedOrders = await prisma.order.deleteMany({});
+    console.log(`✅ Eliminadas ${deletedOrders.count} órdenes`);
 
     // 2. Eliminar todas las membresías
     console.log("🗑️  Eliminando todas las membresías...");
@@ -35,13 +35,13 @@ async function cleanAllData() {
     const remainingProfiles = await prisma.profile.count();
     const remainingTenants = await prisma.tenant.count();
     const remainingMemberships = await prisma.membership.count();
-    const remainingInvoices = await prisma.invoice.count();
+    const remainingOrders = await prisma.order.count();
 
     console.log("\n📊 Estado final de la base de datos:");
     console.log(`- Perfiles restantes: ${remainingProfiles}`);
     console.log(`- Tenants restantes: ${remainingTenants}`);
     console.log(`- Membresías restantes: ${remainingMemberships}`);
-    console.log(`- Facturas restantes: ${remainingInvoices}`);
+    console.log(`- Órdenes restantes: ${remainingOrders}`);
 
     console.log("\n🎉 Base de datos limpiada exitosamente");
     console.log("✅ Ahora puedes hacer pruebas frescas sin conflictos");
@@ -59,8 +59,8 @@ async function cleanTestData() {
   try {
     // Eliminar en orden correcto respetando las foreign keys
     
-    // 1. Eliminar facturas de tenants de prueba
-    const deletedInvoices = await prisma.invoice.deleteMany({
+    // 1. Eliminar órdenes de tenants de prueba
+    const deletedOrders = await prisma.order.deleteMany({
       where: {
         tenant: {
           OR: [
@@ -73,7 +73,7 @@ async function cleanTestData() {
         }
       }
     });
-    console.log(`✅ Eliminadas ${deletedInvoices.count} facturas de prueba`);
+    console.log(`✅ Eliminadas ${deletedOrders.count} órdenes de prueba`);
 
     // 2. Eliminar memberships de tenants/usuarios de prueba
     const deletedMemberships = await prisma.membership.deleteMany({
@@ -141,13 +141,13 @@ async function cleanTestData() {
     const remainingProfiles = await prisma.profile.count();
     const remainingTenants = await prisma.tenant.count();
     const remainingMemberships = await prisma.membership.count();
-    const remainingInvoices = await prisma.invoice.count();
+    const remainingOrders = await prisma.order.count();
 
     console.log("\n📊 Datos restantes:");
     console.log(`- Perfiles: ${remainingProfiles}`);
     console.log(`- Tenants: ${remainingTenants}`);
     console.log(`- Membresías: ${remainingMemberships}`);
-    console.log(`- Facturas: ${remainingInvoices}`);
+    console.log(`- Órdenes: ${remainingOrders}`);
 
     console.log("\n🎉 Limpieza selectiva completada exitosamente");
   } catch (error) {
