@@ -2,6 +2,24 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Label } from "@repo/ui";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
+
+// Schema de validación con Zod
+const companySchema = z.object({
+  name: z.string()
+    .min(1, "El nombre de la empresa es requerido")
+    .min(2, "El nombre debe tener al menos 2 caracteres")
+    .max(100, "El nombre no puede exceder 100 caracteres")
+    .trim(),
+  slug: z.string()
+    .min(1, "El slug es requerido")
+    .min(2, "El slug debe tener al menos 2 caracteres")
+    .max(30, "El slug no puede exceder 30 caracteres")
+    .regex(/^[a-z0-9-]+$/, "El slug solo puede contener letras minúsculas, números y guiones")
+    .trim()
+});
+
+type CompanyFormData = z.infer<typeof companySchema>;
 
 export default function Onboarding() {
   const [loading, setLoading] = useState(true);
@@ -67,33 +85,27 @@ export default function Onboarding() {
     setCreating(true);
     setError("");
 
-    // Validación básica
-    if (!companyName.trim()) {
-      setError("El nombre de la empresa es requerido");
-      setCreating(false);
-      return;
-    }
-
-    if (!slug.trim()) {
-      setError("El slug es requerido");
-      setCreating(false);
-      return;
-    }
-
+    // Validación con Zod
     try {
+      const validatedData = companySchema.parse({
+        name: companyName,
+        slug: slug
+      });
+
+      // Usar datos validados
       const response = await fetch("/api/tenants", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: companyName.trim(),
-          slug: slug.trim(),
+          name: validatedData.name,
+          slug: validatedData.slug,
         }),
       });
 
       const data = await response.json();
-
+      
       if (response.ok) {
         console.log("✅ Tenant creado exitosamente:", data);
         router.push("/dashboard");
@@ -109,8 +121,13 @@ export default function Onboarding() {
         }
       }
     } catch (error) {
-      console.error("❌ Error de red:", error);
-      setError("Error de conexión. Por favor intenta de nuevo.");
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        setError(firstError.message);
+      } else {
+        console.error("❌ Error:", error);
+        setError("Error de conexión. Por favor intenta de nuevo.");
+      }
     } finally {
       setCreating(false);
     }

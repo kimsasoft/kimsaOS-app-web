@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { supabase } from "@repo/supabase";
+import { Mail } from "@repo/ui";
 import { RegisterForm } from "@repo/ui";
 
 export default function Register() {
@@ -42,9 +43,7 @@ export default function Register() {
           <div className="bg-card border border-border rounded-lg p-8 shadow-lg text-center">
             <div className="mb-6">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <Mail className="w-8 h-8 text-blue-600" />
               </div>
               <h1 className="text-2xl font-semibold text-foreground mb-2">
                 ¡Confirma tu correo!
