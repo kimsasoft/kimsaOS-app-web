@@ -10,17 +10,17 @@ interface Tenant {
   domain?: string;
 }
 
-interface Invoice {
+interface Order {
   id: string;
   number: string;
-  amount: string;
+  total: string;
   status: string;
   created_at: string;
 }
 
 export default function Dashboard() {
   const [tenant, setTenant] = useState<Tenant | null>(null);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -36,22 +36,27 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
+      console.log('🔄 Cargando datos del dashboard...');
+      
       // Primero asegurar que el perfil existe
       await fetch("/api/user/profile", { method: "POST" });
 
-      // Cargar información del tenant actual
-      const tenantResponse = await fetch("/api/tenant/current");
+      // Cargar información del tenant del usuario usando la nueva API
+      const tenantResponse = await fetch("/api/user/tenant");
       if (!tenantResponse.ok) {
-        throw new Error("No se pudo cargar la información del tenant");
+        const errorData = await tenantResponse.json();
+        console.error('❌ Error cargando tenant:', errorData);
+        throw new Error(errorData.error || "No se pudo cargar la información del tenant");
       }
       const tenantData = await tenantResponse.json();
+      console.log('✅ Datos del tenant cargados:', tenantData);
       setTenant(tenantData.tenant);
 
-      // Cargar facturas
-      const invoicesResponse = await fetch("/api/tenant/invoices");
-      if (invoicesResponse.ok) {
-        const invoicesData = await invoicesResponse.json();
-        setInvoices(invoicesData.invoices || []);
+      // Cargar órdenes
+      const ordersResponse = await fetch("/api/tenant/invoices");
+      if (ordersResponse.ok) {
+        const ordersData = await ordersResponse.json();
+        setOrders(ordersData.orders || []);
       }
     } catch (err: any) {
       setError(err.message);
@@ -66,8 +71,6 @@ export default function Dashboard() {
       // Limpiar cookies de tenant
       document.cookie =
         "tenant_slug=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie =
-        "tenant_domain=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       router.push("/login");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
@@ -117,30 +120,30 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-6">
-        <h2 className="text-lg font-medium mb-4">Facturas</h2>
-        {invoices.length === 0 ? (
-          <p className="text-gray-500">No hay facturas aún</p>
+        <h2 className="text-lg font-medium mb-4">Órdenes</h2>
+        {orders.length === 0 ? (
+          <p className="text-gray-500">No hay órdenes aún</p>
         ) : (
           <ul className="space-y-2">
-            {invoices.map((invoice) => (
+            {orders.map((order) => (
               <li
-                key={invoice.id}
+                key={order.id}
                 className="p-3 border rounded-lg flex justify-between items-center"
               >
                 <div>
-                  <span className="font-medium">{invoice.number}</span>
-                  <span className="ml-2 text-gray-600">${invoice.amount}</span>
+                  <span className="font-medium">{order.number}</span>
+                  <span className="ml-2 text-gray-600">${order.total}</span>
                 </div>
                 <span
                   className={`px-2 py-1 rounded text-sm ${
-                    invoice.status === "paid"
+                    order.status === "paid"
                       ? "bg-green-100 text-green-800"
-                      : invoice.status === "pending"
+                      : order.status === "pending"
                       ? "bg-yellow-100 text-yellow-800"
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {invoice.status}
+                  {order.status}
                 </span>
               </li>
             ))}
