@@ -13,16 +13,35 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    console.log("🔍 Profile GET - Iniciando...");
+    
     // Verificar configuración
     const dbCheck = checkDatabaseConfig();
-    if (dbCheck) return dbCheck;
+    if (dbCheck) {
+      console.log("❌ Error de configuración de DB");
+      return dbCheck;
+    }
 
     // Verificar autenticación
-    const { error: authError, userId } = checkAuth(headers());
-    if (authError) return authError;
+    const h = headers();
+    const userId = h.get("x-user-id");
+    console.log("🔍 Profile GET - User ID del header:", userId);
+    
+    if (!userId) {
+      console.log("❌ Profile GET - Sin user ID en header");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
+    console.log("🔍 Profile GET - Buscando perfil para usuario:", userId);
+    
+    // Primero, vamos a ver todos los perfiles que existen
+    const allProfiles = await prisma.profile.findMany({
+      select: { id: true, email: true }
+    });
+    console.log("🔍 Profile GET - Todos los perfiles:", allProfiles);
+    
     const profile = await prisma.profile.findUnique({
-      where: { id: userId! },
+      where: { id: userId },
       select: {
         id: true,
         email: true,
@@ -34,6 +53,10 @@ export async function GET() {
       },
     });
 
+    console.log("✅ Profile GET - Perfil encontrado:", profile ? "Sí" : "No");
+    if (profile) {
+      console.log("✅ Profile GET - Datos del perfil:", profile);
+    }
     return NextResponse.json({ profile });
   } catch (error: any) {
     return handleApiError(error, "/api/user/profile GET");
@@ -42,14 +65,27 @@ export async function GET() {
 
 export async function POST() {
   try {
+    console.log("🔍 Profile POST - Iniciando...");
+    
     // Verificar configuración
     const dbCheck = checkDatabaseConfig();
-    if (dbCheck) return dbCheck;
+    if (dbCheck) {
+      console.log("❌ Error de configuración de DB");
+      return dbCheck;
+    }
 
     // Verificar autenticación
-    const { error: authError, userId } = checkAuth(headers());
-    if (authError) return authError;
+    const h = headers();
+    const userId = h.get("x-user-id");
+    console.log("🔍 Profile POST - User ID del header:", userId);
+    
+    if (!userId) {
+      console.log("❌ Profile POST - Sin user ID en header");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
+    console.log("🔍 Profile POST - Obteniendo usuario de Supabase...");
+    
     // Obtener datos del usuario de Supabase Auth
     const supabase = supabaseServer();
     const {
@@ -57,7 +93,13 @@ export async function POST() {
       error: userError,
     } = await supabase.auth.getUser();
 
+    console.log("🔍 Profile POST - Usuario obtenido:", user ? "Sí" : "No");
+    if (userError) {
+      console.log("❌ Profile POST - Error de Supabase:", userError);
+    }
+
     if (userError || !user) {
+      console.log("❌ Profile POST - Sin datos de usuario");
       return NextResponse.json(
         { error: "Unable to get user data" },
         { status: 401 }
@@ -65,9 +107,12 @@ export async function POST() {
     }
 
     // Verificar si ya existe un perfil
+    console.log("🔍 Profile POST - Verificando si perfil existe para userId:", userId);
     let profile = await prisma.profile.findUnique({
       where: { id: userId },
     });
+
+    console.log("🔍 Profile POST - Perfil existente:", profile ? "Sí" : "No");
 
     if (profile) {
       // Si existe, actualizarlo
@@ -91,6 +136,12 @@ export async function POST() {
     } else {
       // Si no existe, crear uno nuevo
       try {
+        console.log("🔍 Profile POST - Creando nuevo perfil con datos:", {
+          userId,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || user.user_metadata?.name || null
+        });
+        
         profile = await prisma.profile.create({
           data: {
             id: userId,

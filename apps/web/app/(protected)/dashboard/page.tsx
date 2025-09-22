@@ -1,29 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { useRouter } from "next/navigation";
-
-interface Tenant {
-  id: string;
-  name: string;
-  slug: string;
-  domain?: string;
-}
-
-interface Invoice {
-  id: string;
-  number: string;
-  amount: string;
-  status: string;
-  created_at: string;
-}
+import { useRouter, useSearchParams } from "next/navigation";
+import { PageHeader } from "../../../components/molecules/PageHeader";
+import { showErrorNotification } from "@repo/ui";
 
 export default function Dashboard() {
-  const [tenant, setTenant] = useState<Tenant | null>(null);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,33 +17,24 @@ export default function Dashboard() {
   );
 
   useEffect(() => {
+    // Verificar si se redirigió por acceso denegado
+    const accessDenied = searchParams.get('access_denied');
+    if (accessDenied === 'empresa') {
+      showErrorNotification("Acceso denegado: Los usuarios 'member' no tienen permisos para acceder a la sección Empresa");
+      // Limpiar el parámetro de la URL sin recargar la página
+      const url = new URL(window.location.href);
+      url.searchParams.delete('access_denied');
+      window.history.replaceState({}, '', url.toString());
+    }
+
     loadDashboardData();
-  }, []);
+  }, [searchParams]);
 
   const loadDashboardData = async () => {
     try {
-      console.log('🔄 Cargando datos del dashboard...');
-      
-      // Primero asegurar que el perfil existe
+      console.log('🔄 Cargando dashboard...');
+      // Solo verificar autenticación
       await fetch("/api/user/profile", { method: "POST" });
-
-      // Cargar información del tenant del usuario usando la nueva API
-      const tenantResponse = await fetch("/api/user/tenant");
-      if (!tenantResponse.ok) {
-        const errorData = await tenantResponse.json();
-        console.error('❌ Error cargando tenant:', errorData);
-        throw new Error(errorData.error || "No se pudo cargar la información del tenant");
-      }
-      const tenantData = await tenantResponse.json();
-      console.log('✅ Datos del tenant cargados:', tenantData);
-      setTenant(tenantData.tenant);
-
-      // Cargar facturas
-      const invoicesResponse = await fetch("/api/tenant/invoices");
-      if (invoicesResponse.ok) {
-        const invoicesData = await invoicesResponse.json();
-        setInvoices(invoicesData.invoices || []);
-      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -71,8 +48,6 @@ export default function Dashboard() {
       // Limpiar cookies de tenant
       document.cookie =
         "tenant_slug=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie =
-        "tenant_domain=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       router.push("/login");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
@@ -101,57 +76,17 @@ export default function Dashboard() {
     );
   }
 
-  if (!tenant) {
-    return (
-      <main className="p-6">
-        <div>Tenant no encontrado</div>
-      </main>
-    );
-  }
-
   return (
-    <main className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-semibold">Dashboard — {tenant.name}</h1>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-        >
-          Cerrar Sesión
-        </button>
-      </div>
-
-      <div className="mt-6">
-        <h2 className="text-lg font-medium mb-4">Facturas</h2>
-        {invoices.length === 0 ? (
-          <p className="text-gray-500">No hay facturas aún</p>
-        ) : (
-          <ul className="space-y-2">
-            {invoices.map((invoice) => (
-              <li
-                key={invoice.id}
-                className="p-3 border rounded-lg flex justify-between items-center"
-              >
-                <div>
-                  <span className="font-medium">{invoice.number}</span>
-                  <span className="ml-2 text-gray-600">${invoice.amount}</span>
-                </div>
-                <span
-                  className={`px-2 py-1 rounded text-sm ${
-                    invoice.status === "paid"
-                      ? "bg-green-100 text-green-800"
-                      : invoice.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {invoice.status}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <main className="p-6 max-w-7xl mx-auto">
+      <PageHeader
+        title="Dashboard"
+        action={{
+          label: "Cerrar Sesión",
+          onClick: handleLogout,
+          variant: "outline",
+          className: "bg-red-500 text-white hover:bg-red-600 border-red-500"
+        }}
+      />
     </main>
   );
 }

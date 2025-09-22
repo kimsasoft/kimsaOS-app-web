@@ -14,6 +14,12 @@ export async function GET() {
   try {
     console.log('🔍 Buscando tenant para usuario:', userId);
     
+    // Primero, veamos todas las memberships que existen
+    const allMemberships = await prisma.membership.findMany({
+      select: { user_id: true, tenant_id: true, role: true }
+    });
+    console.log('🔍 Todas las memberships:', allMemberships);
+    
     // Buscar la membresía del usuario (debería tener solo una como owner)
     const membership = await prisma.membership.findFirst({
       where: { 
@@ -25,8 +31,18 @@ export async function GET() {
             id: true,
             name: true,
             slug: true,
-            domain: true,
+            status: true,
             created_at: true,
+            company: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+                address: true,
+                created_at: true,
+              }
+            }
           }
         }
       },

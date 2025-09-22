@@ -15,7 +15,10 @@
     "db:migrate": "dotenv -e .env -- yarn workspace @repo/database db:migrate",
     "db:migrate:deploy": "dotenv -e .env -- yarn workspace @repo/database db:migrate:deploy",
     "db:studio": "dotenv -e .env -- yarn workspace @repo/database db:studio",
-    "db:seed": "dotenv -e .env -- yarn workspace @repo/database db:seed"
+    "db:seed": "dotenv -e .env -- yarn workspace @repo/database db:seed",
+    "test": "yarn workspace @repo/ui test",
+    "test:ui": "yarn workspace @repo/ui test:ui",
+    "test:coverage": "yarn workspace @repo/ui test:coverage"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

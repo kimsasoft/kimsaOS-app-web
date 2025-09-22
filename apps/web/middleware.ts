@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { prisma } from "@repo/database";
 
 const BASE = (process.env.NEXT_PUBLIC_BASE_DOMAINS ?? "")
   .split(",")
@@ -23,61 +24,15 @@ async function handleLocalhost(
 ) {
   try {
     const existingSlug = req.cookies.get("tenant_slug")?.value;
-    const existingDomain = req.cookies.get("tenant_domain")?.value;
 
-    // Si ya hay cookies, no hacer nada
-    if (existingSlug || existingDomain) {
+    // Si ya hay cookies, no hacer nada por ahora
+    // El tenant se resolverá en las API routes individuales
+    if (existingSlug) {
+      console.log("🍪 Cookie de tenant existente:", existingSlug);
       return;
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      console.error("❌ Error obteniendo usuario:", userError.message);
-      return;
-    }
-
-    // Obtener el primer tenant del usuario usando el cliente normal
-    const { data: memberships, error: membershipError } = await supabase
-      .from("memberships")
-      .select(
-        `
-        tenant_id,
-        tenants!tenant_id (
-          id,
-          slug,
-          domain
-        )
-      `
-      )
-      .eq("user_id", user.id)
-      .limit(1);
-
-    if (membershipError) {
-      console.error(
-        "❌ Error obteniendo memberships:",
-        membershipError.message
-      );
-      return;
-    }
-
-    if (memberships && memberships.length > 0) {
-      const tenant = memberships[0].tenants as any;
-
-      if (tenant) {
-        // Establecer cookies automáticamente
-        if (tenant.domain) {
-          res.cookies.set("tenant_domain", tenant.domain, { path: "/" });
-          res.cookies.delete("tenant_slug");
-        } else if (tenant.slug) {
-          res.cookies.set("tenant_slug", tenant.slug, { path: "/" });
-          res.cookies.delete("tenant_domain");
-        }
-      }
-    }
+    console.log("🏠 Localhost sin cookie de tenant - se resolverá en APIs");
   } catch (error) {
     // Si hay error, continuar sin establecer cookies
     console.error(
@@ -95,14 +50,12 @@ function handleProductionDomains(host: string, res: NextResponse) {
     const parts = host.split(".");
     if (parts.length >= 3) {
       res.cookies.set("tenant_slug", parts[0], { path: "/" });
-      res.cookies.delete("tenant_domain");
     } else {
       res.cookies.delete("tenant_slug");
-      res.cookies.delete("tenant_domain");
     }
   } else {
-    res.cookies.set("tenant_domain", host, { path: "/" });
-    res.cookies.delete("tenant_slug");
+    // Para dominios personalizados, usar el host como slug
+    res.cookies.set("tenant_slug", host.replace(/\./g, '-'), { path: "/" });
   }
 }
 
@@ -138,9 +91,10 @@ export async function middleware(req: NextRequest) {
     // Verificar autenticación para rutas protegidas
     const isProtectedRoute =
       pathname.startsWith("/api/") ||
-      pathname.startsWith("/(protected)") ||
-      pathname === "/dashboard" ||
-      pathname === "/onboarding";
+      pathname.startsWith("/dashboard") ||
+      pathname.startsWith("/onboarding") ||
+      pathname.startsWith("/profile") ||
+      pathname.startsWith("/empresa");
 
     if (isProtectedRoute) {
       const {
@@ -157,7 +111,33 @@ export async function middleware(req: NextRequest) {
         }
       }
 
-      // Agregar user ID a los headers para que las API routes puedan usarlo
+      // Verificar permisos específicos para /empresa
+      if (pathname.startsWith("/empresa")) {
+        try {
+          console.log("🔍 Verificando permisos para /empresa, usuario:", user.id);
+          
+          const membership = await prisma.membership.findFirst({
+            where: { 
+              user_id: user.id 
+            },
+            select: {
+              role: true
+            }
+          });
+          
+          console.log("🔍 Membership encontrada:", membership);
+          
+          if (membership?.role === 'member') {
+            console.log("🚫 Acceso denegado a /empresa para usuario member:", user.id);
+            return NextResponse.redirect(new URL("/dashboard?access_denied=empresa", req.url));
+          }
+          
+          console.log("✅ Acceso permitido a /empresa, role:", membership?.role);
+        } catch (error) {
+          console.error("❌ Error verificando permisos para /empresa:", error);
+          // En caso de error, permitir acceso y que se maneje en la página
+        }
+      }      // Agregar user ID a los headers para que las API routes puedan usarlo
       res.headers.set("x-user-id", user.id);
       console.log(
         "🔍 Middleware estableciendo header x-user-id:",

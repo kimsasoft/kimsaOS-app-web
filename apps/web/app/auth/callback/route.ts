@@ -5,10 +5,17 @@ import { createServerClient } from "@supabase/ssr";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const type = searchParams.get("type"); // Para detectar si es recovery/reset
   const next = searchParams.get("next") ?? "/onboarding";
 
   if (code) {
-    const response = NextResponse.redirect(`${origin}${next}`);
+    // Determinar la redirección basada en el tipo
+    let redirectUrl = `${origin}${next}`;
+    if (type === 'recovery') {
+      redirectUrl = `${origin}/reset-password`;
+    }
+    
+    const response = NextResponse.redirect(redirectUrl);
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -45,9 +52,20 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/login?error=auth_callback_error`);
     }
 
-    // Si el usuario se acaba de confirmar, redirigir al onboarding
+    // Si es recovery (reset password), ir directo a /reset-password
+    if (data.user && data.session && type === 'recovery') {
+      const resetResponse = NextResponse.redirect(`${origin}/reset-password`);
+      
+      // Copiar cookies de la respuesta original
+      response.cookies.getAll().forEach(cookie => {
+        resetResponse.cookies.set(cookie);
+      });
+      
+      return resetResponse;
+    }
+
+    // Si el usuario se acaba de confirmar (signup), redirigir al onboarding
     if (data.user && data.session) {
-      // Para usuarios recién confirmados, ir al onboarding
       const onboardingResponse = NextResponse.redirect(`${origin}/onboarding`);
       
       // Copiar cookies de la respuesta original
