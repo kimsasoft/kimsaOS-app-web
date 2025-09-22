@@ -13,14 +13,14 @@ export const createSidebarItems = (currentPath: string = ""): SidebarItem[] => [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: React.createElement(DashboardIcon),
+    icon: <DashboardIcon className="w-5 h-5" />,
     isActive: currentPath === "/dashboard",
     disabled: false,
   },
   {
     label: "Empresa",
     href: undefined, // Sin link por ahora como pediste
-    icon: React.createElement(CompanyIcon),
+    icon: <CompanyIcon className="w-5 h-5" />,
     isActive: false,
     disabled: true, // Deshabilitado porque no tiene link aún
   },

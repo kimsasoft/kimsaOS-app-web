@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 
 export async function GET() {
-  // Obtener user ID del header establecido por el middleware
   const h = headers();
   const userId = h.get("x-user-id");
   
@@ -12,15 +11,6 @@ export async function GET() {
   }
 
   try {
-    console.log('🔍 Buscando tenant para usuario:', userId);
-    
-    // Primero, veamos todas las memberships que existen
-    const allMemberships = await prisma.membership.findMany({
-      select: { user_id: true, tenant_id: true, role: true }
-    });
-    console.log('🔍 Todas las memberships:', allMemberships);
-    
-    // Buscar la membresía del usuario (debería tener solo una como owner)
     const membership = await prisma.membership.findFirst({
       where: { 
         user_id: userId 
@@ -47,22 +37,15 @@ export async function GET() {
         }
       },
       orderBy: {
-        created_at: 'desc' // Obtener la más reciente
+        created_at: 'desc'
       }
     });
 
     if (!membership || !membership.tenant) {
-      console.log('❌ No se encontró membresía o tenant para usuario:', userId);
       return NextResponse.json({ 
         error: "No tenant found for user. Please create or join a tenant first." 
       }, { status: 404 });
     }
-
-    console.log('✅ Tenant encontrado:', {
-      id: membership.tenant.id,
-      name: membership.tenant.name,
-      slug: membership.tenant.slug
-    });
 
     return NextResponse.json({ 
       tenant: membership.tenant,
@@ -72,7 +55,6 @@ export async function GET() {
       }
     });
   } catch (error: any) {
-    console.error('❌ Error en /api/user/tenant:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

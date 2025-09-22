@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@repo/ui";
 import { ResetPasswordForm } from "../../../../../packages/ui/src/molecules/form/reset-password";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [loading, setLoading] = useState(false);
   const [passwordUpdated, setPasswordUpdated] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -174,5 +174,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
