@@ -125,18 +125,14 @@ export default function Onboarding() {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("✅ Empresa creada exitosamente:", result);
-        
         // Establecer cookie del tenant para localhost
         if (result.data?.tenant?.slug) {
           document.cookie = `tenant_slug=${result.data.tenant.slug}; path=/; max-age=${60 * 60 * 24 * 30}`; // 30 días
-          console.log("🍪 Cookie de tenant establecida:", result.data.tenant.slug);
         }
         
         showSuccessNotification("¡Empresa creada exitosamente!");
         router.push("/dashboard");
       } else {
-        console.error("❌ Error del servidor:", result);
         setError(result.error || "Error desconocido");
         
         // Si el slug ya existe, generar uno nuevo
@@ -150,7 +146,6 @@ export default function Onboarding() {
         }
       }
     } catch (error) {
-      console.error("❌ Error de red:", error);
       setError("Error de conexión. Por favor intenta de nuevo.");
       showErrorNotification("Error de conexión. Por favor intenta de nuevo.");
     } finally {

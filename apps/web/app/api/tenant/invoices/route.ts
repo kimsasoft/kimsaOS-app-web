@@ -15,8 +15,6 @@ export async function GET() {
   }
 
   try {
-    console.log('🔍 Cargando facturas para usuario:', userId);
-    
     // Buscar la membresía del usuario para obtener el tenant
     const membership = await prisma.membership.findFirst({
       where: { 
@@ -28,13 +26,10 @@ export async function GET() {
     });
 
     if (!membership || !membership.tenant) {
-      console.log('❌ No se encontró membresía para usuario:', userId);
       return NextResponse.json({ 
         error: "No tenant membership found" 
       }, { status: 404 });
     }
-
-    console.log('✅ Tenant encontrado para facturas:', membership.tenant.id);
 
     // Obtener las órdenes del tenant
     const orders = await prisma.order.findMany({
@@ -53,11 +48,8 @@ export async function GET() {
       },
     });
 
-    console.log('✅ Órdenes cargadas:', orders.length);
-
     return NextResponse.json({ orders });
   } catch (error: any) {
-    console.error('❌ Error cargando facturas:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

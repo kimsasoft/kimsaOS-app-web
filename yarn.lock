@@ -1047,19 +1047,19 @@ __metadata:
 
 "@repo/database@file:../../packages/database::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=fa965b&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=834e0f&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@prisma/client": "npm:^5.19.1"
-  checksum: 10c0/043987fa41341a7625f52b210753746f3fdac2b0d70c04579434883a5379798c2ef50d5a0984fcf151e4ad6b52d2a8e7096b6b5affebaca1a8aa15f83f39d7b1
+  checksum: 10c0/0010752b2b4567f5baa807c6e608ced5606e10363deb262bb989835d5c185bd11dc5ed441560c08e35687ef4ad6b1d77ec2602f4ba47d98b8d01fe6a36357cc3
   languageName: node
   linkType: hard
 
 "@repo/database@file:../../packages/database::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=fa965b&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/database@file:../../packages/database#../../packages/database::hash=834e0f&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@prisma/client": "npm:^5.19.1"
-  checksum: 10c0/043987fa41341a7625f52b210753746f3fdac2b0d70c04579434883a5379798c2ef50d5a0984fcf151e4ad6b52d2a8e7096b6b5affebaca1a8aa15f83f39d7b1
+  checksum: 10c0/0010752b2b4567f5baa807c6e608ced5606e10363deb262bb989835d5c185bd11dc5ed441560c08e35687ef4ad6b1d77ec2602f4ba47d98b8d01fe6a36357cc3
   languageName: node
   linkType: hard
 
@@ -1101,7 +1101,7 @@ __metadata:
 
 "@repo/ui@file:../../packages/ui::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=44ef5b&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=2e83b0&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@radix-ui/react-label": "npm:^2.0.2"
     "@radix-ui/react-slot": "npm:^1.0.2"
@@ -1109,13 +1109,13 @@ __metadata:
     clsx: "npm:^2.1.1"
     tailwind-merge: "npm:^2.5.2"
     zustand: "npm:^5.0.8"
-  checksum: 10c0/ddbc44b48b22fd1f5149b724e2709cd17f3fbf2a60e24dc5abbb9674021c211499991508dc54cd73b6964b55144490bc43ad8316c0152c3c10b399db3da41690
+  checksum: 10c0/bd1de9cb7b3a5f44d612882726734fc8f528830607f01abf6bd2ae730499ae95407d77253054090ce07255c798977b343fbc8f18adf74e3d953c0c27e47ef8bf
   languageName: node
   linkType: hard
 
 "@repo/ui@file:../../packages/ui::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=44ef5b&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/ui@file:../../packages/ui#../../packages/ui::hash=2e83b0&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@radix-ui/react-label": "npm:^2.0.2"
     "@radix-ui/react-slot": "npm:^1.0.2"
@@ -1123,7 +1123,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     tailwind-merge: "npm:^2.5.2"
     zustand: "npm:^5.0.8"
-  checksum: 10c0/ddbc44b48b22fd1f5149b724e2709cd17f3fbf2a60e24dc5abbb9674021c211499991508dc54cd73b6964b55144490bc43ad8316c0152c3c10b399db3da41690
+  checksum: 10c0/bd1de9cb7b3a5f44d612882726734fc8f528830607f01abf6bd2ae730499ae95407d77253054090ce07255c798977b343fbc8f18adf74e3d953c0c27e47ef8bf
   languageName: node
   linkType: hard
 

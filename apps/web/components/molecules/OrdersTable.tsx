@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 
 interface Order {
   id: string;
@@ -12,13 +12,20 @@ interface OrdersTableProps {
   orders: Order[];
   title?: string;
   emptyMessage?: string;
+  itemsPerPage?: number;
 }
 
 export function OrdersTable({ 
   orders, 
   title = "Órdenes Recientes", 
-  emptyMessage = "No hay órdenes" 
+  emptyMessage = "No hay órdenes",
+  itemsPerPage = 10
 }: OrdersTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedOrders = orders.slice(startIndex, startIndex + itemsPerPage);
   if (orders.length === 0) {
     return (
       <div className="bg-card rounded-lg shadow-sm border">
@@ -65,7 +72,7 @@ export function OrdersTable({
               </tr>
             </thead>
             <tbody className="bg-card divide-y divide-border">
-              {orders.map((order) => (
+              {paginatedOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-muted/20">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                     {order.number}
@@ -94,6 +101,71 @@ export function OrdersTable({
             </tbody>
           </table>
         </div>
+        
+        {totalPages > 1 && (
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+            <div className="flex-1 flex justify-between sm:hidden">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground bg-card hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="ml-3 relative inline-flex items-center px-4 py-2 border border-border text-sm font-medium rounded-md text-foreground bg-card hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Siguiente
+              </button>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  Mostrando <span className="font-medium">{startIndex + 1}</span> a{' '}
+                  <span className="font-medium">
+                    {Math.min(startIndex + itemsPerPage, orders.length)}
+                  </span>{' '}
+                  de <span className="font-medium">{orders.length}</span> resultados
+                </p>
+              </div>
+              <div>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <button
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    ←
+                  </button>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                        page === currentPage
+                          ? 'z-10 bg-primary border-primary text-primary-foreground'
+                          : 'bg-card border-border text-muted-foreground hover:bg-muted'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  
+                  <button
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-border bg-card text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    →
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

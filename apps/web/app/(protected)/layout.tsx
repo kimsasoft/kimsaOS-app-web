@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-
-// Import directo desde el path completo
-import { Sidebar } from "../../../../packages/ui/src/molecules/navigation/sidebar";
-import { NotificationContainer } from "../../../../packages/ui/src/molecules/notifications/NotificationContainer";
+import { createBrowserClient } from "@supabase/ssr";
+import { LoadingProvider } from "../../contexts/LoadingContext";
+import { Sidebar } from "@repo/ui";
+import { NotificationContainer } from "@repo/ui";
+import { UserProfile } from "../../types/user";
 import { DashboardIcon, CompanyIcon, Users } from "../../../../packages/ui/src/icons";
 
-// Wrappers para los iconos para que funcionen con el tipo del Sidebar
 const DashboardIconWrapper = ({ className }: { className?: string }) => <DashboardIcon className={className} />;
 const CompanyIconWrapper = ({ className }: { className?: string }) => <CompanyIcon className={className} />;
 const ProfileIcon = ({ className }: { className?: string }) => <Users className={className} />;
@@ -22,27 +22,20 @@ const createSidebarItems = (currentPath: string = "", userRole: string = "") => 
     disabled: false,
   },
   {
-    label: "Perfil",
+    label: "Profile",
     href: "/profile",
     icon: ProfileIcon,
     isActive: currentPath === "/profile",
     disabled: false,
   },
   {
-    label: "Empresa",
-    href: userRole === "member" ? undefined : "/empresa", // Sin href para members
+    label: "Company",
+    href: userRole === "member" ? undefined : "/company",
     icon: CompanyIconWrapper,
-    isActive: currentPath === "/empresa",
-    disabled: userRole === "member", // Deshabilitado para members
+    isActive: currentPath === "/company",
+    disabled: userRole === "member",
   },
 ];
-
-interface UserProfile {
-  role?: string;
-  membership?: {
-    role: string;
-  };
-}
 
 export default function ProtectedLayout({
   children,
@@ -50,24 +43,25 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [userRole, setUserRole] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("member");
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        console.log("🔍 Cargando datos de usuario y membership...");
         const response = await fetch("/api/user/tenant");
         if (response.ok) {
           const data = await response.json();
           const role = data.membership?.role || "";
           setUserRole(role);
-          console.log("👤 Role del usuario cargado:", role);
-        } else {
-          console.error("❌ Error en respuesta:", response.status, await response.text());
         }
       } catch (error) {
-        console.error("❌ Error cargando perfil:", error);
+        
       } finally {
         setLoading(false);
       }
@@ -89,21 +83,22 @@ export default function ProtectedLayout({
   }
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <div className="flex-shrink-0">
-        <Sidebar items={sidebarItems} />
-      </div>
-      
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-auto p-6">
-          {children}
-        </main>
-      </div>
+    <LoadingProvider>
+      <div className="flex h-screen bg-background">
+        {/* Sidebar */}
+        <div className="flex-shrink-0">
+          <Sidebar items={sidebarItems} />
+        </div>
+        
+        {/* Main content */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <main className="flex-1 overflow-auto p-6">
+            {children}
+          </main>
+        </div>
 
-      {/* Global Notifications */}
-      <NotificationContainer />
-    </div>
+        <NotificationContainer />
+      </div>
+    </LoadingProvider>
   );
 }

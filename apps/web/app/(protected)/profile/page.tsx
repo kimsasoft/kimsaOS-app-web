@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { showErrorNotification, showSuccessNotification } from "@repo/ui";
 import { ProfileCard } from "./components/ProfileCard";
 import { AccountInfoCard } from "./components/AccountInfoCard";
+import { Badge } from "../../../components/ui/Badge";
 
 interface ProfileData {
   id: string;
@@ -31,8 +32,8 @@ export default function ProfilePage() {
         const data = await response.json();
         setProfile(data.profile);
         setFormData({
-          full_name: data.profile.full_name || "",
-          email: data.profile.email || "",
+          full_name: data.profile.full_name,
+          email: data.profile.email,
         });
       } else {
         showErrorNotification("Error al cargar el perfil");
@@ -104,7 +105,22 @@ export default function ProfilePage() {
           saving={saving}
         />
 
-        <AccountInfoCard profile={profile} />
+        <AccountInfoCard 
+          title="Account Information"
+          description="Details about your account and configuration."
+          fields={[
+            {
+              label: "User ID",
+              value: profile?.id || "N/A",
+              type: "mono"
+            },
+            {
+              label: "Account Status", 
+              value: <Badge variant="success">Active</Badge>,
+              type: "badge"
+            }
+          ]}
+        />
       </div>
     </div>
   );

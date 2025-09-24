@@ -19,8 +19,8 @@ const mockItems = [
     isActive: true,
   },
   {
-    label: "Empresa",
-    href: undefined,
+    label: "Company",
+    href: "/company",
     icon: TestIcon,
     disabled: true,
   },
@@ -32,7 +32,7 @@ describe('Sidebar', () => {
     
     expect(screen.getByText('Panel')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Empresa')).toBeInTheDocument();
+    expect(screen.getByText('Company')).toBeInTheDocument();
   });
 
   it('applies active styles to active items', () => {
@@ -45,7 +45,7 @@ describe('Sidebar', () => {
   it('applies disabled styles to disabled items', () => {
     render(<Sidebar items={mockItems} />);
     
-    const empresaItem = screen.getByText('Empresa').parentElement;
+    const empresaItem = screen.getByText('Company').parentElement;
     expect(empresaItem).toHaveClass('opacity-50');
   });
 

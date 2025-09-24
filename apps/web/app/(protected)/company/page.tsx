@@ -4,31 +4,15 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/molecules/PageHeader";
 import { InfoCard } from "@/components/molecules/InfoCard";
-import { Building, Users, Edit, Settings } from "lucide-react";
+import { Building, Users } from "lucide-react";
+import { Tenant } from "@/types/company";
+import { useLoading } from "../../../contexts/LoadingContext";
 
-interface Company {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  created_at: string;
-}
-
-interface Tenant {
-  id: string;
-  name: string;
-  slug: string;
-  status: string;
-  company: Company;
-  created_at: string;
-}
-
-export default function Empresa() {
+export default function Company() {
   const [tenant, setTenant] = useState<Tenant | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showLoading, hideLoading } = useLoading();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,52 +24,33 @@ export default function Empresa() {
   }, []);
 
   const loadCompanyData = async () => {
+    showLoading();
     try {
-      console.log('🔄 Cargando datos de la empresa...');
-      
-      // Primero asegurar que el perfil existe
       await fetch("/api/user/profile", { method: "POST" });
 
-      // Cargar información del tenant del usuario usando la nueva API
       const tenantResponse = await fetch("/api/user/tenant");
       if (!tenantResponse.ok) {
         const errorData = await tenantResponse.json();
-        console.error('❌ Error cargando tenant:', errorData);
         throw new Error(errorData.error || "No se pudo cargar la información del tenant");
       }
       const tenantData = await tenantResponse.json();
-      console.log('✅ Datos del tenant cargados:', tenantData);
       setTenant(tenantData.tenant);
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      hideLoading();
     }
   };
 
   const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      // Limpiar cookies de tenant
-      document.cookie =
-        "tenant_slug=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      router.push("/login");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
+    await supabase.auth.signOut();
+    document.cookie = "tenant_slug=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    router.push("/login");
   };
 
   const handleEditCompany = () => {
-    console.log("Editando información de la empresa...");
+    
   };
-
-  if (loading) {
-    return (
-      <main className="p-6">
-        <div>Cargando información de la empresa...</div>
-      </main>
-    );
-  }
 
   if (error) {
     return (
@@ -104,7 +69,7 @@ export default function Empresa() {
   if (!tenant) {
     return (
       <main className="p-6">
-        <div>Información de la empresa no encontrada</div>
+        <div>Información no encontrada</div>
       </main>
     );
   }
@@ -112,7 +77,7 @@ export default function Empresa() {
   return (
     <main className="p-6 max-w-7xl mx-auto">
       <PageHeader
-        title="Empresa"
+        title="Company"
         description="Información de tu empresa y workspace"
         action={{
           label: "Cerrar Sesión",
@@ -122,10 +87,9 @@ export default function Empresa() {
         }}
       />
 
-      {/* Información de la empresa y workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <InfoCard
-          title="Información de la Empresa"
+          title="Company Information"
           icon={Building}
           iconColor="text-white"
           iconBgColor="bg-blue-500"
@@ -169,7 +133,7 @@ export default function Empresa() {
         </InfoCard>
 
         <InfoCard
-          title="Configuración del Workspace"
+          title="Workspace Settings"
           icon={Users}
           iconColor="text-white"
           iconBgColor="bg-green-500"

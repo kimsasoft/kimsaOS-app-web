@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { PageHeader } from "../../../components/molecules/PageHeader";
 import { showErrorNotification } from "@repo/ui";
 
@@ -9,7 +9,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,22 +16,11 @@ export default function Dashboard() {
   );
 
   useEffect(() => {
-    // Verificar si se redirigió por acceso denegado
-    const accessDenied = searchParams.get('access_denied');
-    if (accessDenied === 'empresa') {
-      showErrorNotification("Acceso denegado: Los usuarios 'member' no tienen permisos para acceder a la sección Empresa");
-      // Limpiar el parámetro de la URL sin recargar la página
-      const url = new URL(window.location.href);
-      url.searchParams.delete('access_denied');
-      window.history.replaceState({}, '', url.toString());
-    }
-
     loadDashboardData();
-  }, [searchParams]);
+  }, []);
 
   const loadDashboardData = async () => {
     try {
-      console.log('🔄 Cargando dashboard...');
       // Solo verificar autenticación
       await fetch("/api/user/profile", { method: "POST" });
     } catch (err: any) {

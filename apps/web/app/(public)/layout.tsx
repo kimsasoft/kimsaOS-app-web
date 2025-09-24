@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+
 import { NotificationContainer } from "../../../../packages/ui/src/molecules/notifications/NotificationContainer";
 
 export default function PublicLayout({

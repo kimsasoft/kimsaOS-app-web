@@ -18,8 +18,8 @@ export const createSidebarItems = (currentPath: string = ""): SidebarItem[] => [
     disabled: false,
   },
   {
-    label: "Empresa",
-    href: undefined, // Sin link por ahora como pediste
+    label: "Company",
+    href: "/company",
     icon: <CompanyIcon className="w-5 h-5" />,
     isActive: false,
     disabled: true, // Deshabilitado porque no tiene link aún

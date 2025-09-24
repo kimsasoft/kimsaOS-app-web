@@ -14,6 +14,7 @@ export { ForgotPasswordForm } from "./molecules/form/forgot-password";
 export { ResetPasswordForm } from "./molecules/form/reset-password";
 export { Sidebar } from "./molecules/navigation/sidebar";
 export { NotificationContainer } from "./molecules/notifications/NotificationContainer";
+export { LoadingOverlay } from "./molecules/loading/LoadingOverlay";
 export { ProfileCard, AccountInfoCard, DangerZoneCard } from "./molecules/profile";
 
 // Hooks
@@ -27,5 +28,11 @@ export {
   showWarningNotification,
   showInfoNotification
 } from "./store/notifications";
+
+export { 
+  useLoadingStore,
+  showLoading,
+  hideLoading 
+} from "./store/loading";
 
 export type { Notification, NotificationType } from "./store/notifications";

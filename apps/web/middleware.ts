@@ -28,17 +28,10 @@ async function handleLocalhost(
     // Si ya hay cookies, no hacer nada por ahora
     // El tenant se resolverá en las API routes individuales
     if (existingSlug) {
-      console.log("🍪 Cookie de tenant existente:", existingSlug);
       return;
     }
-
-    console.log("🏠 Localhost sin cookie de tenant - se resolverá en APIs");
   } catch (error) {
     // Si hay error, continuar sin establecer cookies
-    console.error(
-      "❌ Error en middleware localhost:",
-      error instanceof Error ? error.message : "Error desconocido"
-    );
   }
 }
 
@@ -94,7 +87,7 @@ export async function middleware(req: NextRequest) {
       pathname.startsWith("/dashboard") ||
       pathname.startsWith("/onboarding") ||
       pathname.startsWith("/profile") ||
-      pathname.startsWith("/empresa");
+      pathname.startsWith("/company");
 
     if (isProtectedRoute) {
       const {
@@ -111,11 +104,9 @@ export async function middleware(req: NextRequest) {
         }
       }
 
-      // Verificar permisos específicos para /empresa
-      if (pathname.startsWith("/empresa")) {
+      // Verificar permisos específicos para /company
+      if (pathname.startsWith("/company")) {
         try {
-          console.log("🔍 Verificando permisos para /empresa, usuario:", user.id);
-          
           const membership = await prisma.membership.findFirst({
             where: { 
               user_id: user.id 
@@ -125,35 +116,21 @@ export async function middleware(req: NextRequest) {
             }
           });
           
-          console.log("🔍 Membership encontrada:", membership);
-          
           if (membership?.role === 'member') {
-            console.log("🚫 Acceso denegado a /empresa para usuario member:", user.id);
-            return NextResponse.redirect(new URL("/dashboard?access_denied=empresa", req.url));
+            return NextResponse.redirect(new URL("/dashboard?access_denied=company", req.url));
           }
-          
-          console.log("✅ Acceso permitido a /empresa, role:", membership?.role);
         } catch (error) {
-          console.error("❌ Error verificando permisos para /empresa:", error);
           // En caso de error, permitir acceso y que se maneje en la página
         }
       }      // Agregar user ID a los headers para que las API routes puedan usarlo
       res.headers.set("x-user-id", user.id);
-      console.log(
-        "🔍 Middleware estableciendo header x-user-id:",
-        user.id,
-        "para ruta:",
-        pathname
-      );
     }
-
+    
     // Manejo de tenant cookies
     if (isLocalhost) {
       await handleLocalhost(req, res, supabase);
-      console.log("🏠 Local:", host);
     } else {
       handleProductionDomains(host, res);
-      console.log("🌐 Prod:", host);
     }
 
     return res;

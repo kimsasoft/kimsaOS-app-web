@@ -41,13 +41,11 @@ export function LoginForm({
     if (!email || !password || !onPasswordLogin) return;
     
     setIsLoading(true);
-    setError(null); // Limpiar errores anteriores
+    setError(null);
     
     try {
       await onPasswordLogin(email, password);
     } catch (err) {
-      // Siempre mostrar un mensaje de prueba para debugging
-      console.log('Error capturado:', err);
       setError('Credenciales incorrectas. Por favor verifica tu correo y contraseña.');
     } finally {
       setIsLoading(false);
@@ -58,7 +56,7 @@ export function LoginForm({
     if (!email || !onMagicLinkLogin) return;
     
     setIsLoading(true);
-    setError(null); // Limpiar errores anteriores
+    setError(null);
     
     try {
       await onMagicLinkLogin(email);
@@ -77,7 +75,7 @@ export function LoginForm({
     if (!onOAuthLogin) return;
     
     setIsLoading(true);
-    setError(null); // Limpiar errores anteriores
+    setError(null);
     
     try {
       await onOAuthLogin(provider);
@@ -133,7 +131,7 @@ export function LoginForm({
               {/* Link para recuperar contraseña */}
               <a 
                 href="/forgot-password" 
-                className="text-xs text-primary hover:underline font-medium"
+                className="text-sm text-primary hover:underline font-medium"
               >
                 ¿Olvidaste tu contraseña?
               </a>
@@ -151,7 +149,7 @@ export function LoginForm({
           
           <Button 
             onClick={handlePasswordLogin} 
-            disabled={isLoading || !email || !password}
+            disabled={false}
             className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-medium button-enhanced"
           >
             {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
