@@ -7,19 +7,10 @@ import {
   checkAuth,
 } from "@/lib/api-utils";
 
-// Forzar que esta ruta sea dinámica
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    // Verificar configuración
-    const dbCheck = checkDatabaseConfig();
-    if (dbCheck) return dbCheck;
-
-    // Verificar autenticación
-    const { error: authError } = checkAuth(headers());
-    if (authError) return authError;
-
     const c = cookies();
     const slug = c.get("tenant_slug")?.value;
     if (!slug) {

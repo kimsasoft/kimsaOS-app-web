@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
+import { checkAuth } from "@/lib/api-utils";
 
 export async function GET() {
-  const h = headers();
-  const userId = h.get("x-user-id");
-  
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { error, userId } = checkAuth(headers());
+  if (error) return error;
 
   try {
     const membership = await prisma.membership.findFirst({

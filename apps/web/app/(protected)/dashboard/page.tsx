@@ -1,14 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { PageHeader } from "../../../components/molecules/PageHeader";
 import { showErrorNotification } from "@repo/ui";
+import { useLoading } from "../../../contexts/LoadingContext";
+import { Button } from "@repo/ui";
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { showLoading, hideLoading } = useLoading();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,37 +19,52 @@ export default function Dashboard() {
   );
 
   useEffect(() => {
+    const errorParam = searchParams.get('error');
+    if (errorParam === '403') {
+      return;
+    }
     loadDashboardData();
-  }, []);
+  }, [searchParams]);
 
   const loadDashboardData = async () => {
+    showLoading();
     try {
-      // Solo verificar autenticación
       await fetch("/api/user/profile", { method: "POST" });
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      hideLoading();
     }
   };
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      // Limpiar cookies de tenant
       document.cookie =
         "tenant_slug=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       router.push("/login");
     } catch (error) {
-      console.error("Error al cerrar sesión:", error);
+      showErrorNotification("Error al cerrar sesión");
     }
   };
 
-  if (loading) {
+  const errorParam = searchParams.get('error');
+  
+  if (errorParam === '403') {
     return (
-      <main className="p-6">
-        <div>Cargando dashboard...</div>
-      </main>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="max-w-md mx-auto text-center p-8">
+          <div className="mb-8">
+            <h1 className="text-6xl font-bold text-white mb-4">404</h1>
+            <h2 className="text-2xl font-semibold text-white mb-2">
+              Página no encontrada
+            </h2>
+            <p className="text-white">
+              No tienes permisos para acceder a esta página.
+            </p>
+          </div>
+        </div>
+      </div>
     );
   }
 

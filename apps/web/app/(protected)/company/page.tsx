@@ -20,8 +20,26 @@ export default function Company() {
   );
 
   useEffect(() => {
-    loadCompanyData();
+    checkAccess();
   }, []);
+
+  const checkAccess = async () => {
+    try {
+      const response = await fetch("/api/user/tenant");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.membership?.role === 'member') {
+          router.push('/dashboard?error=403');
+          return;
+        }
+        loadCompanyData();
+      } else {
+        loadCompanyData();
+      }
+    } catch (error) {
+      loadCompanyData();
+    }
+  };
 
   const loadCompanyData = async () => {
     showLoading();

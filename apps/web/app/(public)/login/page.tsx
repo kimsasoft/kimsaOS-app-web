@@ -4,15 +4,29 @@ import { LoginForm } from "@repo/ui";
 
 export default function Login() {
   const onPasswordLogin = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) {
-      // El error será capturado por el LoginForm y mostrado con el Alert bonito
       throw new Error(error.message);
     }
-    location.href = "/dashboard";
+    
+    if (data.user) {
+      try {
+        const response = await fetch("/api/user/memberships");
+        const { memberships } = await response.json();
+        
+        if (!memberships || memberships.length === 0) {
+          throw new Error("Tu cuenta aún no está configurada. Por favor revisa tu correo electrónico para completar el registro.");
+        }
+        
+        location.href = "/dashboard";
+      } catch (fetchError) {
+        await supabase.auth.signOut();
+        throw new Error("Tu cuenta aún no está configurada. Por favor revisa tu correo electrónico para completar el registro.");
+      }
+    }
   };
 
   const onMagicLinkLogin = async (email: string) => {
@@ -30,7 +44,13 @@ export default function Login() {
   const onOAuthLogin = async (provider: string) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider as any,
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { 
+        redirectTo: `${location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      },
     });
     if (error) {
       throw new Error(`Error al conectar con ${provider}`);

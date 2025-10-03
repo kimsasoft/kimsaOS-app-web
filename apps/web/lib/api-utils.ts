@@ -2,13 +2,21 @@ import { NextResponse } from "next/server";
 
 export function checkDatabaseConfig() {
   if (!process.env.DATABASE_URL) {
-    console.error("❌ DATABASE_URL no está configurada");
-    return NextResponse.json(
-      { error: "Database configuration missing" },
-      { status: 500 }
-    );
+    console.error("DATABASE_URL no configurada");
+    return false;
   }
-  return null;
+  
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    console.error("NEXT_PUBLIC_SUPABASE_URL no configurada");
+    return false;
+  }
+  
+  if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error("NEXT_PUBLIC_SUPABASE_ANON_KEY no configurada");
+    return false;
+  }
+  
+  return true;
 }
 
 export function checkSupabaseConfig() {
@@ -16,7 +24,7 @@ export function checkSupabaseConfig() {
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    console.error("❌ Variables de Supabase no están configuradas");
+    console.error("Supabase variables not configured");
     return NextResponse.json(
       { error: "Supabase configuration missing" },
       { status: 500 }
@@ -26,7 +34,7 @@ export function checkSupabaseConfig() {
 }
 
 export function handleApiError(error: any, context: string) {
-  console.error(`❌ Error en ${context}:`, error);
+  console.error(`Error in ${context}:`, error);
   return NextResponse.json(
     {
       error: "Internal server error",

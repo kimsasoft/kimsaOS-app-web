@@ -1075,19 +1075,19 @@ __metadata:
 
 "@repo/supabase@file:../../packages/supabase::locator=admin%40workspace%3Aapps%2Fadmin":
   version: 1.0.0
-  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=d76f62&locator=admin%40workspace%3Aapps%2Fadmin"
+  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=582dc2&locator=admin%40workspace%3Aapps%2Fadmin"
   dependencies:
     "@supabase/ssr": "npm:^0.5.1"
-  checksum: 10c0/1bd87580eb13f891ed6eb5748b1e690e1db033474f85922eb02e3358150b6a7f92a46883b36ed94b555c7d5a75849b474c4edb86092afb4c6180d45e54483a80
+  checksum: 10c0/d5a203f5c5bd662ff0c6bca1bca6f845644264aa7fe1dd286293fe52ffb9764f8ed5a569e927462c1d37d108b1323be7aecf5c80537027444d785be0f17fa0bd
   languageName: node
   linkType: hard
 
 "@repo/supabase@file:../../packages/supabase::locator=web%40workspace%3Aapps%2Fweb":
   version: 1.0.0
-  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=d76f62&locator=web%40workspace%3Aapps%2Fweb"
+  resolution: "@repo/supabase@file:../../packages/supabase#../../packages/supabase::hash=582dc2&locator=web%40workspace%3Aapps%2Fweb"
   dependencies:
     "@supabase/ssr": "npm:^0.5.1"
-  checksum: 10c0/1bd87580eb13f891ed6eb5748b1e690e1db033474f85922eb02e3358150b6a7f92a46883b36ed94b555c7d5a75849b474c4edb86092afb4c6180d45e54483a80
+  checksum: 10c0/d5a203f5c5bd662ff0c6bca1bca6f845644264aa7fe1dd286293fe52ffb9764f8ed5a569e927462c1d37d108b1323be7aecf5c80537027444d785be0f17fa0bd
   languageName: node
   linkType: hard
 

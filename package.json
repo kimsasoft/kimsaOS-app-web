@@ -19,15 +19,8 @@
     "test": "yarn workspace @repo/ui test",
     "test:ui": "yarn workspace @repo/ui test:ui",
     "test:coverage": "yarn workspace @repo/ui test:coverage",
-    "clean": "rm -rf .next && rm -rf node_modules/.cache && rm -rf apps/web/.next && rm -rf apps/admin/.next",
-    "clean:win": "if exist .next rmdir /s /q .next & if exist node_modules\\.cache rmdir /s /q node_modules\\.cache & if exist apps\\web\\.next rmdir /s /q apps\\web\\.next & if exist apps\\admin\\.next rmdir /s /q apps\\admin\\.next",
     "clean:cache": "node -e \"const fs=require('fs'); const dirs=['.next','node_modules/.cache','apps/web/.next','apps/admin/.next']; dirs.forEach(d=>{ try{ fs.rmSync(d,{recursive:true,force:true}); console.log('✅ Eliminado:',d); }catch(e){} });\"",
-    "fresh": "yarn clean:win && yarn install && yarn workspace web dev",
-    "fresh:unix": "yarn clean && yarn install && yarn workspace web dev",
-    "dev:clean": "yarn clean:cache && yarn workspace web dev",
-    "dev:fresh": "yarn clean:cache && yarn workspace web dev",
-    "dev:web": "yarn workspace web dev",
-    "dev:admin": "yarn workspace admin dev"
+    "dev:fresh": "yarn clean:cache && yarn workspace web dev"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

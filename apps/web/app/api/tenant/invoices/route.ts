@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
+import { checkAuth } from "@/lib/api-utils";
 
-// Forzar que esta ruta sea dinámica
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  // Obtener user ID del header establecido por el middleware
-  const h = headers();
-  const userId = h.get("x-user-id");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { error, userId } = checkAuth(headers());
+  if (error) return error;
 
   try {
-    // Buscar la membresía del usuario para obtener el tenant
     const membership = await prisma.membership.findFirst({
       where: { 
         user_id: userId 
@@ -31,7 +25,6 @@ export async function GET() {
       }, { status: 404 });
     }
 
-    // Obtener las órdenes del tenant
     const orders = await prisma.order.findMany({
       where: {
         tenant_id: membership.tenant.id,

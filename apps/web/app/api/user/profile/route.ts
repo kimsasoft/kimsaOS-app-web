@@ -2,18 +2,14 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 import { supabaseServer } from "@repo/supabase";
-import { handleApiError } from "@/lib/api-utils";
+import { handleApiError, checkAuth } from "@/lib/api-utils";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const h = headers();
-    const userId = h.get("x-user-id");
-    
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { error, userId } = checkAuth(headers());
+    if (error) return error;
 
     const profile = await prisma.profile.findUnique({
       where: { id: userId },
@@ -36,12 +32,9 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const h = headers();
-    const userId = h.get("x-user-id");
+    const { error, userId } = checkAuth(headers());
+    if (error) return error;
     
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
     const supabase = supabaseServer();
     const {
       data: { user },

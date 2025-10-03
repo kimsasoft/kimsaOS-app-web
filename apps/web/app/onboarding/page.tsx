@@ -76,7 +76,6 @@ export default function Onboarding() {
         }
       }
     } catch (error) {
-      console.error("Error checking memberships:", error);
     } finally {
       setLoading(false);
     }
@@ -156,7 +155,7 @@ export default function Onboarding() {
   if (loading) {
     return (
       <main className="min-h-screen grid place-items-center p-6">
-        <div>Cargando...</div>
+        <div className="text-black">Cargando...</div>
       </main>
     );
   }

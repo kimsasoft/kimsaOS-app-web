@@ -4,6 +4,7 @@ import { showErrorNotification, showSuccessNotification } from "@repo/ui";
 import { ProfileCard } from "./components/ProfileCard";
 import { AccountInfoCard } from "./components/AccountInfoCard";
 import { Badge } from "../../../components/ui/Badge";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 interface ProfileData {
   id: string;
@@ -14,8 +15,8 @@ interface ProfileData {
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const { showLoading, hideLoading } = useLoading();
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -26,6 +27,7 @@ export default function ProfilePage() {
   }, []);
 
   const loadProfile = async () => {
+    showLoading();
     try {
       const response = await fetch("/api/user/profile");
       if (response.ok) {
@@ -41,7 +43,7 @@ export default function ProfilePage() {
     } catch (error) {
       showErrorNotification("Error de conexión");
     } finally {
-      setLoading(false);
+      hideLoading();
     }
   };
 
@@ -73,19 +75,8 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-96 mb-8"></div>
-          <div className="space-y-4">
-            <div className="h-20 bg-gray-200 rounded"></div>
-            <div className="h-20 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
+  if (!profile) {
+    return null;
   }
 
   return (

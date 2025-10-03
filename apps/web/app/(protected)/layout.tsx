@@ -13,29 +13,37 @@ const DashboardIconWrapper = ({ className }: { className?: string }) => <Dashboa
 const CompanyIconWrapper = ({ className }: { className?: string }) => <CompanyIcon className={className} />;
 const ProfileIcon = ({ className }: { className?: string }) => <Users className={className} />;
 
-const createSidebarItems = (currentPath: string = "", userRole: string = "") => [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: DashboardIconWrapper,
-    isActive: currentPath === "/dashboard",
-    disabled: false,
-  },
-  {
-    label: "Profile",
-    href: "/profile",
-    icon: ProfileIcon,
-    isActive: currentPath === "/profile",
-    disabled: false,
-  },
-  {
-    label: "Company",
-    href: userRole === "member" ? undefined : "/company",
-    icon: CompanyIconWrapper,
-    isActive: currentPath === "/company",
-    disabled: userRole === "member",
-  },
-];
+const createSidebarItems = (currentPath: string = "", userRole: string = "") => {
+  const items = [
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      icon: DashboardIconWrapper,
+      isActive: currentPath === "/dashboard",
+      disabled: false,
+    },
+    {
+      label: "Profile",
+      href: "/profile",
+      icon: ProfileIcon,
+      isActive: currentPath === "/profile",
+      disabled: false,
+    },
+  ];
+
+  // Solo agregar Company si NO es member
+  if (userRole !== "member") {
+    items.push({
+      label: "Company",
+      href: "/company",
+      icon: CompanyIconWrapper,
+      isActive: currentPath === "/company",
+      disabled: false,
+    });
+  }
+
+  return items;
+};
 
 export default function ProtectedLayout({
   children,
@@ -74,9 +82,10 @@ export default function ProtectedLayout({
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-background">
-        <div className="flex items-center justify-center w-full">
-          <div className="text-muted-foreground">Cargando...</div>
+      <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-black">Verificando acceso...</p>
         </div>
       </div>
     );

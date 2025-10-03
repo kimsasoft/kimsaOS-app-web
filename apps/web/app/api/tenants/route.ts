@@ -3,8 +3,8 @@ import { z } from "zod";
 import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 import { supabaseServer } from "@repo/supabase";
+import { checkAuth } from "@/lib/api-utils";
 
-// Forzar que esta ruta sea dinámica
 export const dynamic = "force-dynamic";
 
 const schema = z.object({
@@ -14,13 +14,8 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  // Obtener user ID del header establecido por el middleware
-  const h = headers();
-  const userId = h.get("x-user-id");
-
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { error, userId } = checkAuth(headers());
+  if (error) return error;
 
   let input: any;
   const ctype = req.headers.get("content-type") || "";
